@@ -9,7 +9,7 @@ import axios from 'axios'
 
 function App() {
 
-  let [shoes] = useState(data)
+  let [shoes, setShoes] = useState(data)
   let navigate = useNavigate();
 
   return (
@@ -48,11 +48,13 @@ function App() {
                 axios.get('https://codingapple1.github.io/shop/data2.json')
                 .then((결과)=>{
                   console.log(결과.data)
+                  let copy = [...shoes, ...결과.data];
+                  setShoes(copy);
                 })
                 .catch(()=>{
                   console.log('실패함')
                 })
-              }}>버튼</button>
+              }}>더보기</button>
           </>
         }></Route>
         <Route path="/detail/:id" element={<Detail shoes={shoes}/>}></Route>

@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import './App.css';
 import data from './data.js';
@@ -7,9 +7,13 @@ import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 import Detail from './routes/Detail.js'
 import axios from 'axios'
 
+export let Context1 = createContext()
+
 function App() {
 
   let [shoes, setShoes] = useState(data)
+  let [재고] = useState([10, 11, 12])
+
   let navigate = useNavigate();
 
   return (
@@ -57,7 +61,12 @@ function App() {
               }}>더보기</button>
           </>
         }></Route>
-        <Route path="/detail/:id" element={<Detail shoes={shoes}/>}></Route>
+        <Route path="/detail/:id" element={
+          <Context1.Provider value={{ 재고, shoes }}>
+            <Detail shoes={shoes}/>
+          </Context1.Provider>
+        }> 
+        </Route>
         <Route path="/about" element={<About />}>
           <Route path="member" element={<div>멤버임</div>}></Route>
           <Route path="location" element={<div>위치정보임</div>}></Route>

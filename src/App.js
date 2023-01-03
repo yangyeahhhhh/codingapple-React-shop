@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import './App.css';
 import data from './data.js';
@@ -7,6 +7,7 @@ import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 import Detail from './routes/Detail.js'
 import axios from 'axios'
 import Cart from './routes/Cart.js'
+import { useQuery } from '@tanstack/react-query'
 
 export let Context1 = createContext()
 
@@ -17,6 +18,15 @@ function App() {
 
   let navigate = useNavigate();
 
+  let result = useQuery(['작명'], ()=>
+      axios.get('https://codingapple1.github.io/userdata.json').then((a)=>{
+      console.log('요청됨')
+      return a.data
+    }),
+    { staleTime : 2000 }
+  )
+
+
   return (
     <div className="App">
 
@@ -25,7 +35,12 @@ function App() {
           <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link onClick={()=>{ navigate('/') }}>Home</Nav.Link>
-            <Nav.Link onClick={()=>{ navigate('/detail') }}>Cart</Nav.Link>
+            <Nav.Link onClick={()=>{ navigate('/cart') }}>Cart</Nav.Link>
+          </Nav>
+          <Nav className="ms-auto">
+            { result.isLoading && '로딩중' }
+            { result.error && '에러남' }
+            { result.data && result.data.name }
           </Nav>
         </Container>
       </Navbar>
